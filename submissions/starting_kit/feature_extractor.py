@@ -72,7 +72,10 @@ class FeatureExtractor:
                 axis=1,
                 ignore_index=True)
 
-    def process_tfidf(self, col, stem=self.stem_tfidf, fit=False, add=False):
+    def process_tfidf(self, col, stem=None, fit=False, add=False):
+
+        if stem is None:
+            stem = self.stem_tfidf
 
         words = map(lambda x: self.clean_str(x, stem=stem), self.data[col])
         statement_preprocess = lmap(lambda w: ' '.join(w), words)
