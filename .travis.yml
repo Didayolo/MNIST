@@ -17,6 +17,6 @@ install:
 script:
     - flake8 *.py submissions/*/*.py
     - python -m nltk.downloader popular
-    - ramp_test_submission
+    - ramp_test_submission --quick-test
 notifications:
   email: true
