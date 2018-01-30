@@ -1,6 +1,6 @@
 # RAMP starting kit on the Youtube dataset
 
-![](youtube-money.jpg =250x)
+![Youtube money](youtube-money.jpg)
 
 ### Predict number of views of a youtube video from meta-data
 
