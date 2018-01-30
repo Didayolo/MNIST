@@ -1,6 +1,11 @@
 # RAMP starting kit on the Youtube dataset
 
-Authors: Mehdi Cherti & Balazs Kegl
+### Predict number of views of a youtube video from meta-data
+
+Authors: Lou-Andréa Chauvelot, Thomas Bessou, Hoël Plantec, Ashley Hill, Erwann Martin et Adrien Pavao.
+
+-[![Build Status](https://travis-ci.org/didayolo/youtube-challenge.svg?branch=master)](https://travis-ci.org/didayolo/youtube-challenge)
+-
 
 Go to [`ramp-worflow`](https://github.com/paris-saclay-cds/ramp-workflow) for more help on the [RAMP](http:www.ramp.studio) ecosystem.
 
