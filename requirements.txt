@@ -2,7 +2,5 @@ numpy
 scikit-learn
 pandas
 matplotlib
-scikit-image
 joblib
-keras>=2.0
-tensorflow
+nltk
