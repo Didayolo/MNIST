@@ -1,5 +1,7 @@
 # RAMP starting kit on the Youtube dataset
 
+<img src="youtube-money.jpg" width="250", ALIGN="right"/>
+
 ### Predict number of views of a youtube video from meta-data
 
 Authors: Lou-Andréa Chauvelot, Thomas Bessou, Hoël Plantec, Ashley Hill, Erwann Martin et Adrien Pavao.

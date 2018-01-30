@@ -15,7 +15,6 @@ def amap(f, l):
 
 
 class FeatureExtractor:
-
     def strip_accents_unicode(self, s):
         try:
             s = unicode(s, 'utf-8')
@@ -28,8 +27,8 @@ class FeatureExtractor:
 
     def clean_str(self, sentence, stem=True):
         sentence = self.strip_accents_unicode(sentence)
-        words = list(filter(lambda t: t.isalpha(),
-                            nltk.word_tokenize(sentence)))
+        words = list(
+            filter(lambda t: t.isalpha(), nltk.word_tokenize(sentence)))
         if stem:
             stemmer = nltk.stem.SnowballStemmer('english').stem
             words = lmap(stemmer, words)
@@ -48,15 +47,17 @@ class FeatureExtractor:
         if parser is not None:  # list mode
             to_dummy = to_dummy.apply(parser).apply(pd.Series).stack()
 
-        dummies = pd.get_dummies(to_dummy, prefix=col,
-                                 prefix_sep='_').sum(level=0)
+        dummies = pd.get_dummies(
+            to_dummy, prefix=col, prefix_sep='_').sum(level=0)
 
         if fit and add:
             dict_ = dummies.to_dict('records')
             dummies_wdrop = (self.dummies_extractors[col]).fit_transform(dict_)
-            self.out = pd.concat([self.out, pd.DataFrame(
-                dummies_wdrop).add_prefix(col + '_')],
-                axis=1, ignore_index=True)
+            self.out = pd.concat(
+                [self.out,
+                 pd.DataFrame(dummies_wdrop).add_prefix(col + '_')],
+                axis=1,
+                ignore_index=True)
 
         elif fit:  # only
             dict_ = dummies[:1].to_dict('records')
@@ -65,35 +66,35 @@ class FeatureExtractor:
         else:  # add only
             dict_ = dummies.to_dict('records')
             dummies_wdrop = (self.dummies_extractors[col]).transform(dict_)
-            self.out = pd.concat([self.out, pd.DataFrame(
-                dummies_wdrop).add_prefix(col + '_')],
-                axis=1, ignore_index=True)
+            self.out = pd.concat(
+                [self.out,
+                 pd.DataFrame(dummies_wdrop).add_prefix(col + '_')],
+                axis=1,
+                ignore_index=True)
 
-    def process_tfidf(self, col, stem=None, fit=False, add=False):
-        if stem is None:
-            stem = self.stem_tfidf
+    def process_tfidf(self, col, stem=self.stem_tfidf, fit=False, add=False):
 
         words = map(lambda x: self.clean_str(x, stem=stem), self.data[col])
         statement_preprocess = lmap(lambda w: ' '.join(w), words)
 
         if fit and add:
             (self.dummies_extractors)[col] = TfidfVectorizer(analyzer='word')
-            transformed = (self.dummies_extractors)[
-                col].fit_transform(statement_preprocess)
+            transformed = (self.dummies_extractors
+                           )[col].fit_transform(statement_preprocess)
             tfidfdf = pd.DataFrame(transformed.todense()).add_prefix(col)
-            self.out = pd.concat([self.out, tfidfdf],
-                                 axis=1, ignore_index=True)
+            self.out = pd.concat(
+                [self.out, tfidfdf], axis=1, ignore_index=True)
 
         elif fit:  # only
             (self.dummies_extractors)[col] = TfidfVectorizer(analyzer='word')
             (self.dummies_extractors)[col].fit(statement_preprocess)
 
         else:  # add only
-            transformed = (self.dummies_extractors)[
-                col].transform(statement_preprocess)
+            transformed = (
+                self.dummies_extractors)[col].transform(statement_preprocess)
             tfidfdf = pd.DataFrame(transformed.todense()).add_prefix(col)
-            self.out = pd.concat([self.out, tfidfdf],
-                                 axis=1, ignore_index=True)
+            self.out = pd.concat(
+                [self.out, tfidfdf], axis=1, ignore_index=True)
 
     def _fit(self, y=None, fit=True, transform=True):
         self.process_tfidf('description', fit=fit, add=transform)
@@ -107,8 +108,8 @@ class FeatureExtractor:
 
         self._fit(y, fit, transform)
 
-        self.out = pd.concat([self.out, self.data.length],
-                             axis=1, ignore_index=True)
+        self.out = pd.concat(
+            [self.out, self.data.length], axis=1, ignore_index=True)
         self.out.fillna(0, inplace=True)
 
     def fit(self, X_df, y=None):
