@@ -27,11 +27,10 @@ class FeatureExtractor:
         punctuation = set(string.punctuation)
         punctuation.update(["``", "`", "..."])
         words = list(filter(lambda t:t.isalpha(), nltk.word_tokenize(sentence)))
-        tags = lmap(lambda x:x[1], nltk.pos_tag(words))
         if stem :
             stemmer = nltk.stem.SnowballStemmer('english').stem
             words = lmap(stemmer, words)
-        return words, tags
+        return words
 
     def __init__(self, stem_tfidf=True):
         self.stem_tfidf = stem_tfidf
@@ -60,31 +59,30 @@ class FeatureExtractor:
             dummies_wdrop = (self.dummies_extractors[col]).transform(dict_)
             self.out = pd.concat([self.out, pd.DataFrame(dummies_wdrop).add_prefix(col+'_')], axis=1, ignore_index=True)
     
-    def process_tfidf(self, col, stem=None, fit=False, add=False, tags=True):
+    def process_tfidf(self, col, stem=None, fit=False, add=False):
         if stem is None: stem = self.stem_tfidf
 
-        words_tags = map(lambda x: self.clean_str(x, stem=stem), self.data[col])
-        statement_preprocess = lmap(lambda wt: ' '.join(wt[1] if tags else wt[0]), words_tags)
+        words = map(lambda x: self.clean_str(x, stem=stem), self.data[col])
+        statement_preprocess = lmap(lambda w: ' '.join(w), words)
 
         if fit and add:
-            (self.dummies_extractors)['col'] = TfidfVectorizer(analyzer='word')
-            transformed = (self.dummies_extractors)['col'].fit_transform(statement_preprocess)
-            tfidfdf = pd.DataFrame(transformed.todense()).add_prefix(col+('_t' if tags else '_w'))
+            (self.dummies_extractors)[col] = TfidfVectorizer(analyzer='word')
+            transformed = (self.dummies_extractors)[col].fit_transform(statement_preprocess)
+            tfidfdf = pd.DataFrame(transformed.todense()).add_prefix(col)
             self.out = pd.concat([self.out, tfidfdf], axis=1, ignore_index=True)
     
         elif fit: # only
-            (self.dummies_extractors)['col'] = TfidfVectorizer(analyzer='word')
-            (self.dummies_extractors)['col'].fit(statement_preprocess)
+            (self.dummies_extractors)[col] = TfidfVectorizer(analyzer='word')
+            (self.dummies_extractors)[col].fit(statement_preprocess)
 
         else: # add only
-            transformed = (self.dummies_extractors)['col'].transform(statement_preprocess)
-            tfidfdf = pd.DataFrame(transformed.todense()).add_prefix(col+('_t' if tags else '_w'))
+            transformed = (self.dummies_extractors)[col].transform(statement_preprocess)
+            tfidfdf = pd.DataFrame(transformed.todense()).add_prefix(col)
             self.out = pd.concat([self.out, tfidfdf], axis=1, ignore_index=True)
     
             
     def _fit(self, y=None, fit=True, transform=True):
         self.process_tfidf('description', fit=fit, add=transform)
-        
         self.process_tfidf('title', fit=fit, add=transform)
         self.process_dummies('category', fit=fit, add=transform)
 
