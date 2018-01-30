@@ -4,8 +4,14 @@ import numpy as np
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.base import BaseEstimator
 
-def lmap(f,l): return list(map(f,l))
-def amap(f,l): return np.array(lmap(f,l))
+
+def lmap(f, l):
+    return list(map(f, l))
+
+
+def amap(f, l):
+    return np.array(lmap(f, l))
+
 
 class Classifier(BaseEstimator):
     def __init__(self):
@@ -19,4 +25,4 @@ class Classifier(BaseEstimator):
 
     def predict_proba(self, X):
         y_pred = self.predict(X)
-        return amap(lambda tr: [1 if i == tr else 0 for i in range(6)],y_pred)
+        return amap(lambda tr: [1 if i == tr else 0 for i in range(6)], y_pred)
