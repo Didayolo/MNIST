@@ -17,4 +17,4 @@ Install ramp-workflow (rampwf), then execute
 ramp_test_submission
 ```
 
-Get started on this RAMP with the [dedicated notebook](YoutubeViews_starting_kit.ipynb).
+Get started on this RAMP with the [dedicated notebook](Youtube_starting_kit.ipynb).
